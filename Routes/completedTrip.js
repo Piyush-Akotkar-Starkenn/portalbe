@@ -11,8 +11,11 @@ const CompletedTripRoute = express.Router();
 
 CompletedTripRoute.get("/getTripById/:id", getTripDataById);
 CompletedTripRoute.get("/getFaultsByTripId/:id", getFaultCountByTripId);
-CompletedTripRoute.get("/getCompletedTrips/:offset", getCompletedTrips);
-CompletedTripRoute.get("/getCompletedTrips/", getCompletedTripsAll);
+CompletedTripRoute.get(
+  "/getCompletedTrips/:offset/:user_id",
+  getCompletedTrips
+);
+CompletedTripRoute.get("/getCompletedTrips/:user_id", getCompletedTripsAll);
 CompletedTripRoute.get(
   "/getCompletedTripsByVehicleId/:id",
   getCompletedTripsByVehicleId
