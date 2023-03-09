@@ -7,7 +7,7 @@ import {
 
 const OngoingTripsRouter = express.Router();
 
-OngoingTripsRouter.get("/getOngoingTrips", getOngoingTrips);
+OngoingTripsRouter.get("/getOngoingTrips/:user_id", getOngoingTrips);
 OngoingTripsRouter.get("/getOngoingTripdataById/:id", getOngoingTripdataById);
 OngoingTripsRouter.put("/endTripById/:id", endTripById);
 
