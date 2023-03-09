@@ -1,10 +1,11 @@
 import { db } from "../Config/db.js";
 
 export const getOngoingTrips = (req, res) => {
+  let { user_id } = req.params;
   const q =
-    "SELECT * FROM trip_summary INNER JOIN vehicle_master ON vehicle_master.vehicle_id=trip_summary.vehicle_id WHERE trip_summary.trip_status = ? ORDER BY trip_summary.id DESC";
+    "SELECT * FROM trip_summary INNER JOIN vehicle_master ON vehicle_master.vehicle_id=trip_summary.vehicle_id WHERE trip_summary.user_id = ? AND trip_summary.trip_status = ? ORDER BY trip_summary.id DESC";
   const status = 0;
-  db.query(q, status, (err, results) => {
+  db.query(q, [user_id, status], (err, results) => {
     if (err) return res.json(err);
     return res.json(results);
   });
