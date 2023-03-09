@@ -116,7 +116,7 @@ export const getuserDevice = (req, res) => {
 
 export const getdevice = (req, res) => {
   const { id } = req.params;
-  const getquery = "SELECT * FROM devices_master INNER JOIN users ON users.user_id = device_master.user_id WHERE id=?";
+  const getquery = "SELECT * FROM devices_master INNER JOIN users ON users.user_id = devices_master.user_id WHERE id=?";
 
   db.query(getquery, [Number(id)], (err, data) => {
     if (err) {
