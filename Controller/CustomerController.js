@@ -119,6 +119,7 @@ export const addUsers = (req, res) => {
           if (err) {
             res.status(500).send({ ErrorHashPass: err });
           } else {
+            let user_type = 2;
             const insertUserQuery =
               "INSERT INTO users(`first_name`,`last_name`,`username`,`email`,`password`,`user_type`,`status`) VALUES (?)";
 
@@ -128,7 +129,7 @@ export const addUsers = (req, res) => {
               req.body.username,
               req.body.email,
               hash,
-              req.body.user_type,
+              user_type,
               req.body.status,
             ];
 
@@ -153,6 +154,7 @@ export const editUser = (req, res) => {
   let { first_name, last_name, username, email, user_type, status } = req.body;
 
   bcrypt.hash(req.body.password, 4, function (err, hash) {
+    let user_type = 2;
     let editQuery = `UPDATE users SET first_name=?,last_name=?,username=?,email=?,password=?,user_type=?,status=? WHERE user_id = ?`;
 
     db.query(
