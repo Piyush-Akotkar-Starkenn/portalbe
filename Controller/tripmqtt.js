@@ -52,41 +52,34 @@ const getMqttData = () => {
         let cq = "SELECT * FROM trip_summary WHERE trip_id = ?";
         db.query(cq, [jsonData.trip_id], (error, results) => {
           if (error) return error;
-          if (results.length == 0) {
-            if (
-              jsonData.event === "IGS" &&
-              jsonData.message === 2 &&
-              jsonData.ignition === 1
-            ) {
-              console.log("Igs");
-              // get vehicle id and user id
-              const q = `SELECT * FROM vehicle_master WHERE ecu = ?`;
-              // const q = `SELECT * FROM vehicle_master WHERE iot = ?`;
-              db.query(q, jsonData.device_id, (err, data) => {
-                if (err) return err;
-                if (data.length > 0) {
-                  let q =
-                    "INSERT INTO trip_summary (trip_id, user_id, vehicle_id, device_id, trip_start_time, trip_status, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())";
+          if (results.length == 0 && jsonData.device_id != "EC0000A") {
+            // get vehicle id and user id
+            const q = `SELECT * FROM vehicle_master WHERE ecu = ?`;
+            // const q = `SELECT * FROM vehicle_master WHERE iot = ?`;
+            db.query(q, jsonData.device_id, (err, data) => {
+              if (err) return err;
+              if (data.length > 0) {
+                let q =
+                  "INSERT INTO trip_summary (trip_id, user_id, vehicle_id, device_id, trip_start_time, trip_status, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())";
 
-                  let istTime = jsonData.timestamp - 19800;
-                  let params = [
-                    jsonData.trip_id,
-                    data[0].user_id,
-                    data[0].vehicle_id,
-                    jsonData.device_id,
-                    istTime,
-                    0,
-                  ];
-                  db.query(q, params, (err, result) => {
-                    if (err) return err;
-                    console.log("Trip summary insterted!");
-                  });
-                } else {
-                  console.log(results, "results");
-                  console.log("Vehicle Data not found");
-                }
-              });
-            }
+                let istTime = jsonData.timestamp - 19800;
+                let params = [
+                  jsonData.trip_id,
+                  data[0].user_id,
+                  data[0].vehicle_id,
+                  jsonData.device_id,
+                  istTime,
+                  0,
+                ];
+                db.query(q, params, (err, result) => {
+                  if (err) return err;
+                  console.log("Trip summary insterted!");
+                });
+              } else {
+                console.log(results, "results");
+                console.log("Vehicle Data not found");
+              }
+            });
           } else {
             console.log("Continue trip");
           }
