@@ -1,7 +1,8 @@
 import { db } from "../Config/db.js";
 //////////////////////Getting All Devices Data/////////////////////
 export const getall = (req, res) => {
-  const queryGet = "SELECT * FROM devices_master";
+  const queryGet =
+    "SELECT * FROM devices_master INNER JOIN users ON users.user_id = devices_master.user_id";
   db.query(queryGet, (err, data) => {
     if (err) {
       res.status(500).send({ ErrorGET: err });
@@ -116,7 +117,8 @@ export const getuserDevice = (req, res) => {
 
 export const getdevice = (req, res) => {
   const { id } = req.params;
-  const getquery = "SELECT * FROM devices_master INNER JOIN users ON users.user_id = devices_master.user_id WHERE id=?";
+  const getquery =
+    "SELECT * FROM devices_master INNER JOIN users ON users.user_id = devices_master.user_id WHERE id=?";
 
   db.query(getquery, [Number(id)], (err, data) => {
     if (err) {
