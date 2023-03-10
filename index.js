@@ -8,12 +8,13 @@ import DevicesRouter from "./Routes/devices.js";
 import CustomerRoute from "./Routes/customer.js";
 import OngoingTripsRouter from "./Routes/ongoingTrips.js";
 import CompletedTripRoute from "./Routes/completedTrip.js";
+import UsersRouter from "./Routes/users.js";
 import cookieParser from "cookie-parser";
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({ origin: "*" }));
 getMqttData();
 
 app.use("/api/login", LoginRouter);
@@ -23,6 +24,7 @@ app.use("/api/devices", DevicesRouter);
 app.use("/api/customers", CustomerRoute);
 app.use("/api/completedTrip", CompletedTripRoute);
 app.use("/api/ongoingTrip", OngoingTripsRouter);
+app.use("/api/users", UsersRouter);
 
 app.listen(8080, () => {
   console.log("Listening on Port 8080");
