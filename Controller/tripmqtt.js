@@ -54,9 +54,38 @@ const getMqttData = () => {
           if (error) return error;
           if (results.length == 0 && jsonData.device_id != "EC0000A") {
             // get vehicle id and user id
+
+            // Insert query for ECU ID
             const q = `SELECT * FROM vehicle_master WHERE ecu = ?`;
             // const q = `SELECT * FROM vehicle_master WHERE iot = ?`;
             db.query(q, jsonData.device_id, (err, data) => {
+              if (err) return err;
+              if (data.length > 0) {
+                let q =
+                  "INSERT INTO trip_summary (trip_id, user_id, vehicle_id, device_id, trip_start_time, trip_status, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())";
+
+                let istTime = jsonData.timestamp - 19800;
+                let params = [
+                  jsonData.trip_id,
+                  data[0].user_id,
+                  data[0].vehicle_id,
+                  jsonData.device_id,
+                  istTime,
+                  0,
+                ];
+                db.query(q, params, (err, result) => {
+                  if (err) return err;
+                  console.log("Trip summary insterted!");
+                });
+              } else {
+                console.log(results, "results");
+                console.log("Vehicle Data not found");
+              }
+            });
+
+            // Insert query for DMS ID
+            const qd = `SELECT * FROM vehicle_master WHERE dms = ?`;
+            db.query(qd, jsonData.device_id, (err, data) => {
               if (err) return err;
               if (data.length > 0) {
                 let q =
@@ -86,10 +115,9 @@ const getMqttData = () => {
         });
 
         if (jsonData.device_id != "EC0000A") {
-          let q =
-            "SELECT trip_id, event FROM tripdata WHERE trip_id = ? AND event = ?";
+          let q = "SELECT trip_id FROM tripdata WHERE trip_id = ?";
 
-          db.query(q, [jsonData.trip_id, "IGS"], (err, results) => {
+          db.query(q, [jsonData.trip_id], (err, results) => {
             if (err) return console.log(err);
 
             if (results.length >= 0) {
