@@ -1,4 +1,4 @@
-import { db } from "../Config/db";
+import { db } from "../Config/db.js";
 
 export default getAllUsers = (req, res) => {
   const q =
