@@ -1,12 +1,14 @@
 import mqtt from "mqtt";
 import { db } from "../Config/db.js";
+import * as dotenv from "dotenv";
+dotenv.config();
 
 import async from "async";
 
 const getMqttData = () => {
   // MQTT creds
-  const host = "13.126.18.96";
-  const port = "1883";
+  const host = process.env.MQTT_HOST;
+  const port = process.env.MQTT_PORT;
   const clientId = `mqtt_${Math.random().toString(16).slice(3)}`;
 
   const connectUrl = `mqtt://${host}:${port}`;
@@ -16,8 +18,8 @@ const getMqttData = () => {
     clientId,
     clean: true,
     connectTimeout: 4000,
-    username: "starkenn",
-    password: "semicolon",
+    username: process.env.MQTT_USERNAME,
+    password: process.env.MQTT_PASSWORD,
     reconnectPeriod: 1000,
   });
 
@@ -52,7 +54,13 @@ const getMqttData = () => {
         let cq = "SELECT * FROM trip_summary WHERE trip_id = ?";
         db.query(cq, [jsonData.trip_id], (error, results) => {
           if (error) return error;
-          if (results.length == 0 && jsonData.device_id != "EC0000A") {
+          if (
+            results.length == 0 &&
+            jsonData.device_id != "EC0000A" &&
+            jsonData.trip_id != "" &&
+            jsonData.td.lat != "" &&
+            jsonData.td.lng
+          ) {
             // get vehicle id and user id
 
             // Insert query for ECU ID
@@ -64,7 +72,7 @@ const getMqttData = () => {
                 let q =
                   "INSERT INTO trip_summary (trip_id, user_id, vehicle_id, device_id, trip_start_time, trip_status, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())";
 
-                let istTime = jsonData.timestamp - 19800;
+                let istTime = jsonData.timestamp;
                 let params = [
                   jsonData.trip_id,
                   data[0].user_id,
@@ -91,7 +99,7 @@ const getMqttData = () => {
                 let q =
                   "INSERT INTO trip_summary (trip_id, user_id, vehicle_id, device_id, trip_start_time, trip_status, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())";
 
-                let istTime = jsonData.timestamp - 19800;
+                let istTime = jsonData.timestamp;
                 let params = [
                   jsonData.trip_id,
                   data[0].user_id,
@@ -105,7 +113,7 @@ const getMqttData = () => {
                   console.log("Trip summary insterted!");
                 });
               } else {
-                console.log(results, "results");
+                console.log(results);
                 console.log("Vehicle Data not found");
               }
             });
@@ -114,7 +122,12 @@ const getMqttData = () => {
           }
         });
 
-        if (jsonData.device_id != "EC0000A") {
+        if (
+          jsonData.device_id != "EC0000A" &&
+          jsonData.trip_id != "" &&
+          jsonData.td.lat != "" &&
+          jsonData.td.lng
+        ) {
           let q = "SELECT trip_id FROM tripdata WHERE trip_id = ?";
 
           db.query(q, [jsonData.trip_id], (err, results) => {
@@ -122,7 +135,7 @@ const getMqttData = () => {
 
             if (results.length >= 0) {
               function updateTripData() {
-                let istTime = jsonData.timestamp - 19800;
+                let istTime = jsonData.timestamp;
                 let values = {
                   trip_id: jsonData.trip_id,
                   device_id: jsonData.device_id,
