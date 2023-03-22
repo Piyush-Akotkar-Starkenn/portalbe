@@ -127,7 +127,7 @@ export const getVehicle = (req, res) => {
 
 export const getusersVehicle = (req, res) => {
   const { user_id } = req.params;
-  const getcustovehi = "SELECT * FROM vehicle_master WHERE user_id=?";
+  const getcustovehi = "SELECT * FROM vehicle_master WHERE user_id=? ORDER BY vehicle_id DESC";
 
   db.query(getcustovehi, [user_id], (err, data) => {
     if (err) {
@@ -164,6 +164,21 @@ export const getECU = (req, res) => {
       res.status(500).send({ Errorecu: err });
     } else {
       res.status(200).send({ ECUData: data });
+    }
+  });
+};
+
+///////getting data of DMS DATA
+
+export const getDMS = (req, res) => {
+  const DMSquery =
+    "SELECT * FROM devices_master LEFT JOIN vehicle_master ON devices_master.device_id=vehicle_master.dms WHERE devices_master.device_type='DMS' AND vehicle_master.vehicle_id IS null";
+  db.query(DMSquery, (err, data) => {
+    if (err) {
+      res.status(500).send({ ErrorDMS: err });
+    } else {
+      console.log(data);
+      res.status(200).send({ DMSdata: data });
     }
   });
 };
