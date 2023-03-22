@@ -25,6 +25,8 @@ VehicleRouter.get("/user-vehicle/:user_id", getusersVehicle);
 VehicleRouter.get("/get-iot", getIoT);
 //////////////////////Getting ECU Data which is not assign to any vehicle/////////////////////
 VehicleRouter.get("/get-ecu", getECU);
+///////Get DMS data which is not assign to any vehicle
+VehicleRouter.get("/get-dms", getDMS);
 ///////////////////////////////Get Vehicle by trip id/////////////////////
 VehicleRouter.get("/getVehicleByTripId/:id", getVehicleByTripId);
 export default VehicleRouter;
