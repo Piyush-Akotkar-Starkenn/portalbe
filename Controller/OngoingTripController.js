@@ -14,7 +14,7 @@ export const getOngoingTrips = (req, res) => {
 export const getOngoingTripdataById = (req, res) => {
   const tripId = req.params.id;
 
-  const q = "SELECT * FROM tripdata WHERE trip_id = ?";
+  const q = "SELECT * FROM tripdata WHERE trip_id = ? ORDER BY timestamp ASC";
 
   db.query(q, [tripId], (err, data) => {
     if (err) return res.json(err);
