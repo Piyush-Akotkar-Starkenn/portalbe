@@ -2,7 +2,7 @@ import { db } from "../Config/db.js";
 //////////////////////Getting All Devices Data/////////////////////
 export const getall = (req, res) => {
   const queryGet =
-    "SELECT * FROM devices_master INNER JOIN users ON users.user_id = devices_master.user_id";
+    "SELECT * FROM devices_master INNER JOIN users ON users.user_id = devices_master.user_id ORDER BY devices_master.id DESC";
   db.query(queryGet, (err, data) => {
     if (err) {
       res.status(500).send({ ErrorGET: err });
