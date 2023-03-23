@@ -3,7 +3,7 @@ import { db } from "../Config/db.js";
 export const getTripDataById = (req, res) => {
   const tripId = req.params.id;
 
-  const q = "SELECT * FROM tripdata WHERE trip_id = ?";
+  const q = "SELECT * FROM tripdata WHERE trip_id = ? ORDER BY timestamp ASC";
 
   db.query(q, [tripId], (err, data) => {
     if (err) return res.json(err);
@@ -53,5 +53,16 @@ export const getCompletedTripsByVehicleId = (req, res) => {
   db.query(q, [status, vehicleId], (err, results) => {
     if (err) return res.json(err);
     return res.json(results);
+  });
+};
+
+export const getTripSummaryById = (req, res) => {
+  const tripId = req.params.id;
+
+  const q = "SELECT * FROM trip_summary WHERE trip_id = ?";
+
+  db.query(q, [tripId], (err, data) => {
+    if (err) return res.json(err);
+    return res.json(data);
   });
 };
