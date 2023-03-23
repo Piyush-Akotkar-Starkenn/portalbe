@@ -6,6 +6,7 @@ import {
   getAllVehicles,
   getECU,
   getIoT,
+  getDMS,
   getusersVehicle,
   getVehicle,
   getVehicleByTripId,
