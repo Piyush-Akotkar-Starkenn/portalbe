@@ -1,5 +1,6 @@
 import express from "express";
 import getMqttData from "./Controller/tripmqtt.js";
+import cronJob from "./Controller/Cron.js";
 import cors from "cors";
 import LoginRouter from "./Routes/login.js";
 import VehicleRouter from "./Routes/vehicles.js";
@@ -16,6 +17,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: "*" }));
 getMqttData();
+
+setInterval(cronJob, 30 * 60 * 1000); // run cronjob every 30 mins
 
 app.use("/api/login", LoginRouter);
 app.use(authetication);
