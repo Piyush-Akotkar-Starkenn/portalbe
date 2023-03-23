@@ -5,11 +5,13 @@ import {
   getFaultCountByTripId,
   getTripDataById,
   getCompletedTripsByVehicleId,
+  getTripSummaryById,
 } from "../Controller/CompletedTripController.js";
 
 const CompletedTripRoute = express.Router();
 
 CompletedTripRoute.get("/getTripById/:id", getTripDataById);
+CompletedTripRoute.get("/getTripSummaryById/:id", getTripSummaryById);
 CompletedTripRoute.get("/getFaultsByTripId/:id", getFaultCountByTripId);
 CompletedTripRoute.get(
   "/getCompletedTrips/:offset/:user_id",
