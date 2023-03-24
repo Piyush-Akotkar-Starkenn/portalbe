@@ -51,33 +51,34 @@ export const addDevice = (req, res) => {
 
 export const editDevice = (req, res) => {
   const { id } = req.params;
+
+  let { ...columns } = req.body;
+
   const checkQuery = "SELECT * FROM devices_master WHERE device_id=? ";
 
   db.query(checkQuery, [req.body.device_id], (err, data) => {
     if (err) {
       res.status(500).send({ ErrorCheck: err });
     } else {
-      const updateQuery =
-        "UPDATE devices_master SET device_id=?,device_type=?,user_id=?,sim_number=?,status=? WHERE id=?";
+      let updateQuery = `UPDATE devices_master SET `;
+      let updateData = [];
 
-      db.query(
-        updateQuery,
-        [
-          req.body.device_id,
-          req.body.device_type,
-          req.body.user_id,
-          req.body.sim_number,
-          req.body.status,
-          id,
-        ],
-        (err, data) => {
-          if (err) {
-            res.status(500).send({ ErrorUpdating: err });
-          } else {
-            res.status(200).send({ updatedData: data });
-          }
+      Object.keys(columns).forEach((key, index) => {
+        updateQuery += `${key}=?`;
+        updateData.push(columns[key]);
+
+        if (index < Object.keys(columns).length - 1) {
+          updateQuery += ", ";
         }
-      );
+      });
+
+      updateQuery += `WHERE id=?`;
+      updateData.push(id);
+
+      db.query(updateQuery, updateData, (error, results, fields) => {
+        if (error) throw error;
+        res.send({ editResult: results });
+      });
     }
   });
 };
@@ -87,7 +88,7 @@ export const editDevice = (req, res) => {
 export const deleteDevice = (req, res) => {
   const { id } = req.params;
 
-  const deleteQuery = "DELETE fROM devices_master WHERE id=?";
+  const deleteQuery = "DELETE FROM devices_master WHERE id=?";
 
   db.query(deleteQuery, [id], (err, data) => {
     if (err) {
