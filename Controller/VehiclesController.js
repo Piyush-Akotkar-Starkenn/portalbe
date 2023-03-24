@@ -25,7 +25,7 @@ export const addVehicle = (req, res) => {
       res.status(500).send({ Error: err });
     } else {
       if (data.length > 0) {
-        res.status(500).send({ Error: "User Already Exists" });
+        res.status(500).send({ Error: "Vehicle Already Exists" });
       } else {
         const addQuery =
           "INSERT INTO vehicle_master(`user_id`,`vehicle_name`,`vehicle_registration`,`ecu`,`iot`,`featureset`,`status`, `created_at`) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
@@ -54,43 +54,26 @@ export const addVehicle = (req, res) => {
 //////////////////////Editing Vehicle Data of Particular Customer User Data/////////////////////
 export const editVehicle = (req, res) => {
   const { vehicle_id, user_id } = req.params;
+  let { ...columns } = req.body;
 
-  const { vehicle_name, vehicle_registration, ecu, iot, featureset, status } =
-    req.body;
-  const checkQuery = "SELECT * FROM vehicle_master WHERE vehicle_name=? ";
+  let updateQuery = `UPDATE vehicle_master SET `;
+  let updateData = [];
 
-  db.query(checkQuery, [vehicle_registration], (err, datacheck) => {
-    if (err) {
-      res.status(500).send({ ErrorCheck: err });
-    } else {
-      if (datacheck.length > 0) {
-        res.status(500).send({ Error: "Vehicle Already Exists" });
-      } else {
-        const editQuery =
-          "UPDATE vehicle_master SET user_id=?,vehicle_name=?,vehicle_registration=?,ecu=?,iot=?,featureset=?,status=? WHERE vehicle_id=?";
+  Object.keys(columns).forEach((key, index) => {
+    updateQuery += `${key}=?`;
+    updateData.push(columns[key]);
 
-        db.query(
-          editQuery,
-          [
-            user_id,
-            vehicle_name,
-            vehicle_registration,
-            ecu,
-            iot,
-            featureset,
-            status,
-            vehicle_id,
-          ],
-          (err, data) => {
-            if (err) {
-              res.status(500).send({ Error: err });
-            } else {
-              res.status(200).send({ editData: data });
-            }
-          }
-        );
-      }
+    if (index < Object.keys(columns).length - 1) {
+      updateQuery += ", ";
     }
+  });
+
+  updateQuery += `WHERE vehicle_id=?`;
+  updateData.push(vehicle_id);
+
+  db.query(updateQuery, updateData, (error, results, fields) => {
+    if (error) throw error;
+    res.send({ editResult: results });
   });
 };
 
@@ -127,7 +110,8 @@ export const getVehicle = (req, res) => {
 
 export const getusersVehicle = (req, res) => {
   const { user_id } = req.params;
-  const getcustovehi = "SELECT * FROM vehicle_master WHERE user_id=? ORDER BY vehicle_id DESC";
+  const getcustovehi =
+    "SELECT * FROM vehicle_master WHERE user_id=? ORDER BY vehicle_id DESC";
 
   db.query(getcustovehi, [user_id], (err, data) => {
     if (err) {
