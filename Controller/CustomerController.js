@@ -59,35 +59,29 @@ export const addCustomer = (req, res) => {
 //////////////////////Editing Master_customer Data using user_id && customer_id /////////////////////
 
 export const editCustomer = (req, res) => {
-  const { user_id, customer_id } = req.params;
+  const { customer_id } = req.params;
 
-  const { company_name, address, state, city, pincode, phone, status } =
-    req.body;
+  let { ...columns } = req.body;
 
-  const editQuery =
-    "UPDATE customer_master SET user_id=?,company_name=?,address=?,state=?,city=?,pincode=?,phone=?,status=? WHERE customer_id=?";
+  let updateQuery = `UPDATE customer_master SET `;
+  let updateData = [];
 
-  db.query(
-    editQuery,
-    [
-      user_id,
-      company_name,
-      address,
-      state,
-      city,
-      pincode,
-      phone,
-      status,
-      customer_id,
-    ],
-    (err, data) => {
-      if (err) {
-        res.status(500).send({ Error: err });
-      } else {
-        res.status(200).send({ UpdatedData: data });
-      }
+  Object.keys(columns).forEach((key, index) => {
+    updateQuery += `${key}=?`;
+    updateData.push(columns[key]);
+
+    if (index < Object.keys(columns).length - 1) {
+      updateQuery += ", ";
     }
-  );
+  });
+
+  updateQuery += `WHERE customer_id=?`;
+  updateData.push(customer_id);
+
+  db.query(updateQuery, updateData, (error, results, fields) => {
+    if (error) throw error;
+    res.send({ editResult: results });
+  });
 };
 //////////////////getting all the users for admin side///////
 
@@ -151,32 +145,27 @@ export const addUsers = (req, res) => {
 
 export const editUser = (req, res) => {
   let { user_id } = req.params;
-  let { first_name, last_name, username, email, user_type, status } = req.body;
-
+  let { ...columns } = req.body;
   bcrypt.hash(req.body.password, 4, function (err, hash) {
-    let user_type = 2;
-    let editQuery = `UPDATE users SET first_name=?,last_name=?,username=?,email=?,password=?,user_type=?,status=? WHERE user_id = ?`;
+    let updateQuery = `UPDATE users SET `;
+    let updateData = [];
 
-    db.query(
-      editQuery,
-      [
-        first_name,
-        last_name,
-        username,
-        email,
-        hash,
-        user_type,
-        status,
-        user_id,
-      ],
-      (err, data) => {
-        if (err) {
-          res.status(500).send({ Error: err });
-        } else {
-          res.status(200).send({ Message: "User Updated", myData: data });
-        }
+    Object.keys(columns).forEach((key, index) => {
+      updateQuery += `${key}=?`;
+      updateData.push(columns[key]);
+
+      if (index < Object.keys(columns).length - 1) {
+        updateQuery += ", ";
       }
-    );
+    });
+
+    updateQuery += `WHERE user_id=?`;
+    updateData.push(user_id);
+
+    db.query(updateQuery, updateData, (error, results, fields) => {
+      if (error) throw error;
+      res.send({ editResult: results });
+    });
   });
 };
 
