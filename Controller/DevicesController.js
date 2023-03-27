@@ -99,7 +99,7 @@ export const deleteDevice = (req, res) => {
   });
 };
 
-//////////////////////Getting which device assign to which User/////////////////////
+///////////////////Getting which device assign to which User/////////////////////
 
 export const getuserDevice = (req, res) => {
   const { user_id } = req.params;
