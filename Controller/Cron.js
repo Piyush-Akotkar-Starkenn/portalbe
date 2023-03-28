@@ -32,8 +32,10 @@ const cronJob = () => {
                   } else if (index === results.length - 2) {
                     endTime = item.timestamp;
                   }
-                  let geodata = { latitude: item.lat, longitude: item.lng };
-                  path.push(geodata);
+                  if (item.event == "LOC") {
+                    let geodata = { latitude: item.lat, longitude: item.lng };
+                    path.push(geodata);
+                  }
                   allSpd.push(item.spd);
                 });
 
