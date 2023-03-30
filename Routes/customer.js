@@ -7,6 +7,7 @@ import {
   getall,
   getallusers,
   getuserById,
+  getCustomerDetailByUserId,
 } from "../Controller/CustomerController.js";
 
 const CustomerRoute = express.Router();
