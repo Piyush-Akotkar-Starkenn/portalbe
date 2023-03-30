@@ -27,5 +27,6 @@ CustomerRoute.post("/add-user", addUsers);
 CustomerRoute.put("/edit-user/:user_id", editUser);
 /////////////////////////get Particular User
 CustomerRoute.get("/get-user/:user_id", getuserById);
+CustomerRoute.get("/get-customer-details/:user_id", getCustomerDetailByUserId);
 
 export default CustomerRoute;
