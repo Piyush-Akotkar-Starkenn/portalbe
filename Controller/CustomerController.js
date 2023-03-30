@@ -183,3 +183,17 @@ export const getuserById = (req, res) => {
     }
   });
 };
+
+export const getCustomerDetailByUserId = (req, res) => {
+  const { user_id } = req.params;
+  const getQuery = "SELECT * FROM customer_master WHERE user_id=?";
+
+  db.query(getQuery, [user_id], (err, data) => {
+    if (err) {
+      res.status(500).send({ ErrorIdGet: err });
+    } else {
+      res.status(200).send({ IdData: data });
+    }
+  });
+};
+
