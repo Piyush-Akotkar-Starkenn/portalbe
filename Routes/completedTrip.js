@@ -6,6 +6,7 @@ import {
   getTripDataById,
   getCompletedTripsByVehicleId,
   getTripSummaryById,
+  getAllAlertsByVehicleId,
 } from "../Controller/CompletedTripController.js";
 
 const CompletedTripRoute = express.Router();
@@ -22,5 +23,10 @@ CompletedTripRoute.get(
   "/getCompletedTripsByVehicleId/:id",
   getCompletedTripsByVehicleId
 );
+CompletedTripRoute.get(
+  "/getAllAlertsByVehicleId/:userid/:vehicleId/:fault/:startDate/:endDate",
+  getAllAlertsByVehicleId
+);
+
 
 export default CompletedTripRoute;
