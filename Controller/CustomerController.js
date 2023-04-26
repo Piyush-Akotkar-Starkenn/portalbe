@@ -58,33 +58,30 @@ export const addCustomer = (req, res) => {
 
 //////////////////////Editing Master_customer Data using user_id && customer_id /////////////////////
 
-export const editUser = (req, res) => {
-  let { user_id } = req.params;
+
+export const editCustomer = (req, res) => {
+  const { customer_id } = req.params;
+
   let { ...columns } = req.body;
 
-  bcrypt.hash(req.body.password, 10, (err, hash) => {
-    if (err) throw err;
-    columns.password = hash;
+  let updateQuery = `UPDATE customer_master SET `;
+  let updateData = [];
 
-    let updateQuery = `UPDATE users SET `;
-    let updateData = [];
+  Object.keys(columns).forEach((key, index) => {
+    updateQuery += `${key}=?`;
+    updateData.push(columns[key]);
 
-    Object.keys(columns).forEach((key, index) => {
-      updateQuery += `${key}=?`;
-      updateData.push(columns[key]);
+    if (index < Object.keys(columns).length - 1) {
+      updateQuery += ", ";
+    }
+  });
 
-      if (index < Object.keys(columns).length - 1) {
-        updateQuery += ", ";
-      }
-    });
+  updateQuery += `WHERE customer_id=?`;
+  updateData.push(customer_id);
 
-    updateQuery += `WHERE user_id=?`;
-    updateData.push(user_id);
-
-    db.query(updateQuery, updateData, (error, results, fields) => {
-      if (error) throw error;
-      res.send({ editResult: results });
-    });
+  db.query(updateQuery, updateData, (error, results, fields) => {
+    if (error) throw error;
+    res.send({ editResult: results });
   });
 };
 //////////////////getting all the users for admin side///////
@@ -148,30 +145,34 @@ export const addUsers = (req, res) => {
 //////////////Editing the Users data
 
 export const editUser = (req, res) => {
-  let { user_id } = req.params;
-  let { ...columns } = req.body;
-  bcrypt.hash(req.body.password, 4, function (err, hash) {
-    let updateQuery = `UPDATE users SET `;
-    let updateData = [];
+    let { user_id } = req.params;
+    let { ...columns } = req.body;
 
-    Object.keys(columns).forEach((key, index) => {
-      updateQuery += `${key}=?`;
-      updateData.push(columns[key]);
+    bcrypt.hash(req.body.password, 10, (err, hash) => {
+      if (err) throw err;
+      columns.password = hash;
 
-      if (index < Object.keys(columns).length - 1) {
-        updateQuery += ", ";
-      }
+      let updateQuery = `UPDATE users SET `;
+      let updateData = [];
+
+      Object.keys(columns).forEach((key, index) => {
+        updateQuery += `${key}=?`;
+        updateData.push(columns[key]);
+
+        if (index < Object.keys(columns).length - 1) {
+          updateQuery += ", ";
+        }
+      });
+
+      updateQuery += `WHERE user_id=?`;
+      updateData.push(user_id);
+
+      db.query(updateQuery, updateData, (error, results, fields) => {
+        if (error) throw error;
+        res.send({ editResult: results });
+      });
     });
-
-    updateQuery += `WHERE user_id=?`;
-    updateData.push(user_id);
-
-    db.query(updateQuery, updateData, (error, results, fields) => {
-      if (error) throw error;
-      res.send({ editResult: results });
-    });
-  });
-};
+  };
 
 //////////////////get user data by user_id
 
