@@ -4,6 +4,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import async from "async";
+import EndTrip from "./EndTrip.js";
 
 const getMqttData = () => {
   // MQTT creds
@@ -51,6 +52,9 @@ const getMqttData = () => {
       const insertData = async.queue(function (task, callback) {
         let jsonData = task.message;
         console.log(jsonData);
+        EndTrip(jsonData);
+
+        // Insert Into Trip Summary
         let cq = "SELECT * FROM trip_summary WHERE trip_id = ?";
         db.query(cq, [jsonData.trip_id], (error, results) => {
           if (error) return error;
@@ -58,8 +62,10 @@ const getMqttData = () => {
             results.length == 0 &&
             jsonData.device_id != "EC0000A" &&
             jsonData.trip_id != "" &&
+            jsonData.td.lat != undefined &&
             jsonData.td.lat != "" &&
-            jsonData.td.lng
+            jsonData.td.lng != undefined &&
+            jsonData.td.lng != ""
           ) {
             // get vehicle id and user id
 
@@ -122,11 +128,14 @@ const getMqttData = () => {
           }
         });
 
+        // Insert Into Trip Data
         if (
           jsonData.device_id != "EC0000A" &&
           jsonData.trip_id != "" &&
+          jsonData.td.lat != undefined &&
           jsonData.td.lat != "" &&
-          jsonData.td.lng
+          jsonData.td.lng != undefined &&
+          jsonData.td.lng != ""
         ) {
           let q = "SELECT trip_id FROM tripdata WHERE trip_id = ?";
 
@@ -136,6 +145,28 @@ const getMqttData = () => {
             if (results.length >= 0) {
               function updateTripData() {
                 let istTime = jsonData.timestamp;
+                let cpu_load = null;
+                let cpu_temp = null;
+                let memory = null;
+                if (jsonData.device_health) {
+                  if (
+                    jsonData.device_health.cpu_load != undefined &&
+                    jsonData.device_health.cpu_load != "" &&
+                    jsonData.device_health.cpu_temp != undefined &&
+                    jsonData.device_health.cpu_temp != "" &&
+                    jsonData.device_health.memory != undefined &&
+                    jsonData.device_health.memory != ""
+                  ) {
+                    cpu_load = jsonData.device_health.cpu_load;
+                    cpu_temp = jsonData.device_health.cpu_temp;
+                    memory = jsonData.device_health.memory;
+                  } else {
+                    cpu_load = null;
+                    cpu_temp = null;
+                    memory = null;
+                  }
+                }
+
                 let values = {
                   trip_id: jsonData.trip_id,
                   device_id: jsonData.device_id,
@@ -146,6 +177,9 @@ const getMqttData = () => {
                   lat: jsonData.td.lat,
                   lng: jsonData.td.lng,
                   spd: jsonData.td.spd,
+                  cpu_load: cpu_load,
+                  cpu_temp: cpu_temp,
+                  memory: memory,
                   jsonData: JSON.stringify(task.message),
                 };
 
