@@ -1,14 +1,14 @@
 import express from "express";
 import {
-  endTripById,
   getOngoingTripdataById,
   getOngoingTrips,
+  getOngoingFaultByTripId,
 } from "../Controller/OngoingTripController.js";
 
 const OngoingTripsRouter = express.Router();
 
 OngoingTripsRouter.get("/getOngoingTrips/:user_id", getOngoingTrips);
 OngoingTripsRouter.get("/getOngoingTripdataById/:id", getOngoingTripdataById);
-OngoingTripsRouter.put("/endTripById/:id", endTripById);
+OngoingTripsRouter.get("/getOngoingFaultByTripId/:id", getOngoingFaultByTripId);
 
 export default OngoingTripsRouter;
