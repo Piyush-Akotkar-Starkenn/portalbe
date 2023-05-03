@@ -23,17 +23,14 @@ export const getOngoingTripdataById = (req, res) => {
   });
 };
 
-export const endTripById = (req, res) => {
-  const tripId = req.params.id;
-  const data = req.body;
+export const getOngoingFaultByTripId = (req, res) => {
+  const tripID = req.params.id;
 
-  const q = "UPDATE trip_summary SET ? WHERE trip_id = ?";
+  const q =
+    "SELECT * FROM tripdata WHERE trip_id = ? AND event != 'IGS' AND event != 'NSQ' AND event != 'LOC' AND event != 'RFID'";
 
-  db.query(q, [data, tripId], (err, results) => {
+  db.query(q, [tripID], (err, data) => {
     if (err) return res.json(err);
-    return res.json({
-      status: 200,
-      message: "Success",
-    });
+    return res.json(data);
   });
 };
