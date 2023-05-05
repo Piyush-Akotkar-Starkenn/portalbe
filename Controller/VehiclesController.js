@@ -27,30 +27,71 @@ export const addVehicle = (req, res) => {
       if (data.length > 0) {
         res.status(500).send({ Error: "Vehicle Already Exists" });
       } else {
-        const addQuery =
-          "INSERT INTO vehicle_master(`user_id`,`vehicle_name`,`vehicle_registration`,`ecu`,`iot`,`featureset`,`status`, `created_at`) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+        if (req.body.dms && req.body.iot == null && req.body.ecu == null) {
+          const addQuery =
+            "INSERT INTO vehicle_master(`user_id`,`vehicle_name`,`vehicle_registration`,`dms`,`featureset`,`status`, `created_at`) VALUES (?, ?, ?, ?, ?, ?, NOW())";
 
-        const values = [
-          user_id,
-          req.body.vehicle_name,
-          req.body.vehicle_registration,
-          req.body.ecu,
-          req.body.iot,
-          req.body.featureset,
-          req.body.status,
-        ];
-        db.query(addQuery, values, (err, data) => {
-          if (err) {
-            res.status(500).send({ Error: err });
-          } else {
-            res.status(200).send({ addData: data });
-          }
-        });
+          const values = [
+            user_id,
+            req.body.vehicle_name,
+            req.body.vehicle_registration,
+            req.body.dms,
+            1,
+            req.body.status,
+          ];
+          db.query(addQuery, values, (err, data) => {
+            if (err) {
+              res.status(500).send({ Error: err });
+            } else {
+              res.status(200).send({ addData: data });
+            }
+          });
+        } else if (req.body.dms == null && req.body.iot && req.body.ecu) {
+          const addQuery =
+            "INSERT INTO vehicle_master(`user_id`,`vehicle_name`,`vehicle_registration`,`ecu`,`iot`,`featureset`,`status`, `created_at`) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+
+          const values = [
+            user_id,
+            req.body.vehicle_name,
+            req.body.vehicle_registration,
+            req.body.ecu,
+            req.body.iot,
+            1,
+            req.body.status,
+          ];
+          db.query(addQuery, values, (err, data) => {
+            if (err) {
+              res.status(500).send({ Error: err });
+            } else {
+              res.status(200).send({ addData: data });
+            }
+          });
+        } else {
+          const addQuery =
+            "INSERT INTO vehicle_master(`user_id`,`vehicle_name`,`vehicle_registration`,`ecu`,`iot`,`dms`,`featureset`,`status`, `created_at`) VALUES (?, ?, ?, ?, ?, ?, ?,?, NOW())";
+
+          const values = [
+            user_id,
+            req.body.vehicle_name,
+            req.body.vehicle_registration,
+            req.body.ecu,
+            req.body.iot,
+            req.body.dms,
+            1,
+            req.body.status,
+          ];
+          db.query(addQuery, values, (err, data) => {
+            if (err) {
+              res.status(500).send({ Error: err });
+            } else {
+              res.status(200).send({ addData: data });
+            }
+          });
+        }
       }
     }
   });
 };
-
 //////////////////////Editing Vehicle Data of Particular Customer User Data/////////////////////
 export const editVehicle = (req, res) => {
   const { vehicle_id, user_id } = req.params;
