@@ -1,8 +1,8 @@
 import { db } from "../Config/db.js";
 
-//////////////////////Getting All Vehicle Data/////////////////////
+// Getting All Vehicle Data
 export const getAllVehicles = (req, res) => {
-  const Query = "SELECT * FROM vehicle_master";
+  const Query = "SELECT * FROM vehicle_master ORDER BY vehicle_id DESC";
 
   db.query(Query, (err, data) => {
     if (err) {
@@ -13,7 +13,7 @@ export const getAllVehicles = (req, res) => {
   });
 };
 
-//////////////////////Adding vehicle Into DataBase/////////////////////
+// Adding vehicle Into DataBase
 export const addVehicle = (req, res) => {
   const { user_id } = req.params;
 
@@ -92,7 +92,8 @@ export const addVehicle = (req, res) => {
     }
   });
 };
-//////////////////////Editing Vehicle Data of Particular Customer User Data/////////////////////
+
+// Editing Vehicle Data of Particular Customer User Data
 export const editVehicle = (req, res) => {
   const { vehicle_id, user_id } = req.params;
   let { ...columns } = req.body;
@@ -118,7 +119,7 @@ export const editVehicle = (req, res) => {
   });
 };
 
-//////////////////////Deleting Vehicle Data using vehicle_id /////////////////////
+// Deleting Vehicle Data using vehicle_id
 export const deleteVehicle = (req, res) => {
   const { vehicle_id } = req.params;
   const deleteQuery = "DELETE FROM vehicle_master WHERE vehicle_id=?";
@@ -132,8 +133,7 @@ export const deleteVehicle = (req, res) => {
   });
 };
 
-//////////////////////Getting Data of Particular vehicle/////////////////////
-
+// Getting Data of Particular vehicle
 export const getVehicle = (req, res) => {
   const { vehicle_id } = req.params;
   const getQuery = "SELECT * FROM vehicle_master WHERE vehicle_id=?";
@@ -147,8 +147,7 @@ export const getVehicle = (req, res) => {
   });
 };
 
-//////////////////////Getting vehicle Data of particular user /////////////////////
-
+// Getting vehicle Data of particular user
 export const getusersVehicle = (req, res) => {
   const { user_id } = req.params;
   const getcustovehi =
@@ -163,8 +162,7 @@ export const getusersVehicle = (req, res) => {
   });
 };
 
-//////////////////////Getting IoT Data which is not assign to any vehicle/////////////////////
-
+// Getting IoT Data which is not assign to any vehicle
 export const getIoT = (req, res) => {
   const getiotQuery =
     "SELECT * FROM devices_master LEFT JOIN vehicle_master ON devices_master.device_id=vehicle_master.iot WHERE devices_master.device_type='IoT' AND vehicle_master.vehicle_id IS null";
@@ -178,8 +176,7 @@ export const getIoT = (req, res) => {
   });
 };
 
-//////////////////////Getting ECU Data which is not assign to any vehicle/////////////////////
-
+// Getting ECU Data which is not assign to any vehicle
 export const getECU = (req, res) => {
   const ecugetQuery =
     "SELECT * FROM devices_master LEFT JOIN vehicle_master ON devices_master.device_id=vehicle_master.ecu WHERE devices_master.device_type='ECU' AND vehicle_master.vehicle_id IS null";
@@ -193,7 +190,7 @@ export const getECU = (req, res) => {
   });
 };
 
-///////getting data of DMS DATA
+// getting data of DMS DATA
 
 export const getDMS = (req, res) => {
   const DMSquery =
@@ -207,7 +204,7 @@ export const getDMS = (req, res) => {
     }
   });
 };
-///////////////////get vehicle by trip id////////////
+// get vehicle by trip id
 export const getVehicleByTripId = (req, res) => {
   const tripId = req.params.id;
   const q = `SELECT * FROM vehicle_master INNER JOIN trip_summary ON trip_summary.vehicle_id=vehicle_master.vehicle_id WHERE trip_summary.trip_id = ?`;
