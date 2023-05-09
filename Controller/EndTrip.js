@@ -1,4 +1,3 @@
-import { log } from "async";
 import { db } from "../Config/db.js";
 import cronJobForEndTrip from "./Cronjob.js";
 
