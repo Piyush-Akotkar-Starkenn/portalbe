@@ -29,7 +29,7 @@ const cronJob = () => {
                 results.forEach((item, index) => {
                   if (index === 0) {
                     startTime = item.timestamp;
-                  } else if (index === results.length - 2) {
+                  } else if (index === results.length - 1) {
                     endTime = item.timestamp;
                   }
                   if (item.event == "LOC") {
@@ -40,28 +40,31 @@ const cronJob = () => {
                 });
 
                 let maxSpd = Math.max(...allSpd.map(parseFloat));
-
+                let difference = "";
+                let distance = 0;
                 // calculate the total distance traveled
-                const totalDistance = pkg.getPathLength(path); // In meters
-                let distance = totalDistance / 1000; // In Kms
+                if (endTime > 0 && startTime > 0) {
+                  const totalDistance = pkg.getPathLength(path); // In meters
+                  distance = totalDistance / 1000; // In Kms
 
-                let difference = endTime - startTime; // seconds
-                let hours = Math.floor(difference / 3600);
-                difference = difference % 3600;
-                let minutes = Math.floor(difference / 60);
-                difference = difference % 60;
-                let seconds = difference;
-                if (hours > 0) {
-                  duration =
-                    hours + " hours " + minutes + " Mins " + seconds + " Sec";
-                } else {
-                  duration = minutes + " Mins " + seconds + " Sec";
+                  difference = endTime - startTime; // seconds
+                  let hours = Math.floor(difference / 3600);
+                  difference = difference % 3600;
+                  let minutes = Math.floor(difference / 60);
+                  difference = difference % 60;
+                  let seconds = difference;
+                  if (hours > 0) {
+                    duration =
+                      hours + " hours " + minutes + " Mins " + seconds + " Sec";
+                  } else {
+                    duration = minutes + " Mins " + seconds + " Sec";
+                  }
                 }
 
                 // Avg speed
                 let averageSpeed = 0;
                 if (difference > 0) {
-                  averageSpeed = (distance / difference) * 3.6; // km per second
+                  averageSpeed = (distance / difference) * 3.6; // km per hr
                   if (
                     averageSpeed >= 0 &&
                     averageSpeed != null &&
@@ -87,7 +90,11 @@ const cronJob = () => {
                   "time:",
                   difference,
                   "& Avg:",
-                  averageSpeed
+                  averageSpeed,
+                  "EndTime: ",
+                  endTime,
+                  "Timediff",
+                  timeDiffInMin
                 );
 
                 if (parseInt(timeDiffInMin) > 30) {
