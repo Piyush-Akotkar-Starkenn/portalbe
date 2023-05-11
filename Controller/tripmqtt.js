@@ -35,9 +35,9 @@ const getMqttData = () => {
           let getTopic = "starkennInv3/" + row.device_id + "/data";
           client.subscribe(getTopic, (err) => {
             if (err) {
-              // console.log("Error subscribing to topic:", getTopic);
+               console.log("Error subscribing to topic:", getTopic);
             } else {
-              // console.log("Subscribed to topic:", getTopic);
+               console.log("Subscribed to topic:", getTopic);
             }
           });
         });
@@ -93,7 +93,7 @@ const getMqttData = () => {
                 });
               } else {
                 // console.log(results, "results");
-                // console.log("Vehicle Data not found");
+                 console.log("Vehicle Data not found");
               }
             });
 
@@ -120,11 +120,11 @@ const getMqttData = () => {
                 });
               } else {
                 // console.log(results);
-                // console.log("Vehicle Data not found");
+                 console.log("Vehicle Data not found");
               }
             });
           } else {
-            // console.log("Continue trip");
+             console.log("Continue trip");
           }
         });
 
@@ -205,7 +205,7 @@ const getMqttData = () => {
         if (error) throw error;
       });
     } catch (error) {
-      // console.log(error);
+       console.log(error);
     }
   });
 };
