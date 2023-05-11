@@ -14,7 +14,7 @@ const EndTrip = (jsonData) => {
         data.forEach((item) => {
           // console.log("Trip end wali id", item.trip_id);
           if (item.trip_id == jsonData.trip_id) {
-            // console.log("Data coming from:", item.trip_id);
+             console.log("Data coming from:", item.trip_id);
           } else {
             // console.log("Trip should be end:", item.trip_id);
             const updateOngoingTrip = `UPDATE trip_summary SET trip_status=? WHERE trip_id=?`;
@@ -26,11 +26,11 @@ const EndTrip = (jsonData) => {
           }
         });
       } else {
-        // console.log("Double trip not found!");
+         console.log("Double trip not found!");
       }
     });
   } catch (error) {
-    // console.log(error);
+     console.log(error);
   }
 };
 
