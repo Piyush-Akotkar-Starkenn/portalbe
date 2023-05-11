@@ -199,7 +199,7 @@ export const getDMS = (req, res) => {
     if (err) {
       res.status(500).send({ ErrorDMS: err });
     } else {
-      console.log(data);
+      // console.log(data);
       res.status(200).send({ DMSdata: data });
     }
   });
