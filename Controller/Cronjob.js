@@ -106,21 +106,21 @@ const cronJobForEndTrip = () => {
                       }
                     );
                   } catch (error) {
-                    // console.log(error);
+                     console.log(error);
                   }
                 } else {
-                  // console.log("Trip continued");
+                   console.log("Trip continued");
                 }
               }
             });
           } catch (error) {
-            // console.log(error);
+             console.log(error);
           }
         });
       }
     });
   } catch (error) {
-    // console.log(error);
+     console.log(error);
   }
 };
 
