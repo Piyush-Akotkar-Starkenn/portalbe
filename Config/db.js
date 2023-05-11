@@ -13,8 +13,8 @@ export const db = mysql.createConnection({
 
 db.connect((err) => {
   if (err) {
-    console.log({ ErrorDB: err });
+    // console.log({ ErrorDB: err });
   } else {
-    console.log("Connected to Database");
+    // console.log("Connected to Database");
   }
 });
