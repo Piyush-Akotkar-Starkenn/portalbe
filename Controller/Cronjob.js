@@ -31,7 +31,7 @@ const cronJobForEndTrip = () => {
                     startTime = item.timestamp;
                   } else if (index === results.length - 1) {
                     endTime = item.timestamp;
-                    console.log(endTime);
+                    // console.log(endTime);
                   }
                   if (item.event == "LOC") {
                     let geodata = { latitude: item.lat, longitude: item.lng };
@@ -83,21 +83,6 @@ const cronJobForEndTrip = () => {
                 let timeDiff = currentTime - endTime;
                 let timeDiffInMin = timeDiff / 60;
 
-                console.log(
-                  "TripID:",
-                  tripID,
-                  " & Distance:",
-                  distance,
-                  "time:",
-                  difference,
-                  "& Avg:",
-                  averageSpeed,
-                  "EndTime: ",
-                  endTime,
-                  "Timediff",
-                  timeDiffInMin
-                );
-
                 // return false;
                 if (parseInt(timeDiffInMin) > 30) {
                   try {
@@ -116,26 +101,26 @@ const cronJobForEndTrip = () => {
                         tripID,
                       ],
                       (err, data) => {
-                        if (err) console.log(err);
-                        console.log(data);
+                        if (err) return err;
+                        // console.log(data);
                       }
                     );
                   } catch (error) {
-                    console.log(error);
+                    // console.log(error);
                   }
                 } else {
-                  console.log("Trip continued");
+                  // console.log("Trip continued");
                 }
               }
             });
           } catch (error) {
-            console.log(error);
+            // console.log(error);
           }
         });
       }
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 };
 
