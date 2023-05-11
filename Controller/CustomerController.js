@@ -1,7 +1,7 @@
 import { db } from "../Config/db.js";
 import bcrypt from "bcryptjs";
 
-//////////////////////Getting Customers from user_id /////////////////////
+// Getting Customers from user_id
 export const getall = (req, res) => {
   const { user_id } = req.params;
 
@@ -16,8 +16,7 @@ export const getall = (req, res) => {
   });
 };
 
-//////////////////////Adding Master_Customer Data/////////////////////
-
+// Adding Master_Customer Data
 export const addCustomer = (req, res) => {
   const { user_id } = req.params;
 
@@ -56,8 +55,7 @@ export const addCustomer = (req, res) => {
   });
 };
 
-//////////////////////Editing Master_customer Data using user_id && customer_id /////////////////////
-
+// Editing Master_customer Data using user_id && customer_id
 export const editCustomer = (req, res) => {
   const { customer_id } = req.params;
 
@@ -84,12 +82,12 @@ export const editCustomer = (req, res) => {
   });
 };
 
-//////////////////getting all the users for admin side///////
-
+// getting all the users for admin side
 export const getallusers = (req, res) => {
-  const queryall = "SELECT * from users";
+  const queryall =
+    "SELECT * from users WHERE user_type = ? ORDER BY user_id DESC";
 
-  db.query(queryall, (err, data) => {
+  db.query(queryall, [2], (err, data) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -98,8 +96,7 @@ export const getallusers = (req, res) => {
   });
 };
 
-//////////Adding users in admin side
-
+// Adding users in admin side
 export const addUsers = (req, res) => {
   const checkuserQuery = "SELECT * FROM users WHERE  username=? OR email=? ";
 
@@ -168,8 +165,7 @@ export const editUser = (req, res) => {
   });
 };
 
-//////////////////get user data by user_id
-
+// get user data by user_id
 export const getuserById = (req, res) => {
   const { user_id } = req.params;
   const getQuery = "SELECT * FROM users WHERE user_id=?";
