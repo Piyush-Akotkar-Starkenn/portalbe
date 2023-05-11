@@ -59,7 +59,7 @@ export const getCompletedTripsByVehicleId = (req, res) => {
       }
     });
   } catch (error) {
-    // console.log(error);
+     console.log(error);
   }
 };
 
@@ -237,7 +237,7 @@ export const getAllAlertsByVehicleId = (req, res) => {
       });
     });
   } catch (error) {
-    // console.log(error);
+     console.log(error);
   }
 };
 
