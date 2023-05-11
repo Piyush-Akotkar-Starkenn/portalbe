@@ -35,9 +35,9 @@ const getMqttData = () => {
           let getTopic = "starkennInv3/" + row.device_id + "/data";
           client.subscribe(getTopic, (err) => {
             if (err) {
-              console.log("Error subscribing to topic:", getTopic);
+              // console.log("Error subscribing to topic:", getTopic);
             } else {
-              console.log("Subscribed to topic:", getTopic);
+              // console.log("Subscribed to topic:", getTopic);
             }
           });
         });
@@ -51,7 +51,7 @@ const getMqttData = () => {
       // Use the async.queue() function to handle multiple topics at the same time
       const insertData = async.queue(function (task, callback) {
         let jsonData = task.message;
-        console.log(jsonData);
+        // console.log(jsonData);
         EndTrip(jsonData);
 
         // Insert Into Trip Summary
@@ -89,11 +89,11 @@ const getMqttData = () => {
                 ];
                 db.query(q, params, (err, result) => {
                   if (err) return err;
-                  console.log("Trip summary insterted!");
+                  // console.log("Trip summary insterted!");
                 });
               } else {
-                console.log(results, "results");
-                console.log("Vehicle Data not found");
+                // console.log(results, "results");
+                // console.log("Vehicle Data not found");
               }
             });
 
@@ -116,15 +116,15 @@ const getMqttData = () => {
                 ];
                 db.query(q, params, (err, result) => {
                   if (err) return err;
-                  console.log("Trip summary insterted!");
+                  // console.log("Trip summary insterted!");
                 });
               } else {
-                console.log(results);
-                console.log("Vehicle Data not found");
+                // console.log(results);
+                // console.log("Vehicle Data not found");
               }
             });
           } else {
-            console.log("Continue trip");
+            // console.log("Continue trip");
           }
         });
 
@@ -140,7 +140,7 @@ const getMqttData = () => {
           let q = "SELECT trip_id FROM tripdata WHERE trip_id = ?";
 
           db.query(q, [jsonData.trip_id], (err, results) => {
-            if (err) return console.log(err);
+            if (err) return err;
 
             if (results.length >= 0) {
               function updateTripData() {
@@ -186,7 +186,7 @@ const getMqttData = () => {
                 let q = "INSERT INTO tripdata SET ?";
                 db.query(q, values, function (error, results) {
                   if (error) throw error;
-                  console.log("Inserted");
+                  // console.log("Inserted");
                   callback();
                 });
               }
@@ -205,7 +205,7 @@ const getMqttData = () => {
         if (error) throw error;
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   });
 };
