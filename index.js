@@ -30,5 +30,5 @@ app.use("/api/ongoingTrip", OngoingTripsRouter);
 app.use("/api/users", UsersRouter);
 
 app.listen(8080, () => {
-  console.log("Listening on Port 8080");
+  // console.log("Listening on Port 8080");
 });
