@@ -191,7 +191,6 @@ export const getECU = (req, res) => {
 };
 
 // getting data of DMS DATA
-
 export const getDMS = (req, res) => {
   const DMSquery =
     "SELECT * FROM devices_master LEFT JOIN vehicle_master ON devices_master.device_id=vehicle_master.dms WHERE devices_master.device_type='DMS' AND vehicle_master.vehicle_id IS null";
@@ -199,11 +198,12 @@ export const getDMS = (req, res) => {
     if (err) {
       res.status(500).send({ ErrorDMS: err });
     } else {
-      // console.log(data);
+      console.log(data);
       res.status(200).send({ DMSdata: data });
     }
   });
 };
+
 // get vehicle by trip id
 export const getVehicleByTripId = (req, res) => {
   const tripId = req.params.id;

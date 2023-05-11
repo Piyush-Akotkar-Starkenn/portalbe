@@ -28,5 +28,4 @@ CompletedTripRoute.get(
   getAllAlertsByVehicleId
 );
 
-
 export default CompletedTripRoute;

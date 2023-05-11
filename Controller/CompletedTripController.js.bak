@@ -35,6 +35,7 @@ export const getCompletedTrips = (req, res) => {
     return res.json(results);
   });
 };
+
 export const getCompletedTripsAll = (req, res) => {
   let { offset, user_id } = req.params;
 

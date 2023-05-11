@@ -17,7 +17,7 @@ CustomerRoute.get("/getall/:user_id", getall);
 ///////add customers data
 CustomerRoute.post("/add-customer/:user_id", addCustomer);
 //////update customers data
-CustomerRoute.put("/edit-customer/:customer_id", editCustomer);
+CustomerRoute.put("/edit-customer/:user_id/:customer_id", editCustomer);
 ///////////////////////////////////////////////////////////////////////
 //////get all users for admin
 CustomerRoute.get("/getall", getallusers);

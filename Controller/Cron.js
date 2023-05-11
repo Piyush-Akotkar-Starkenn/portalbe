@@ -62,25 +62,31 @@ const cronJob = () => {
                 }
 
                 // Avg speed
-                let averageSpeed = 0;
-                if (difference > 0) {
-                  averageSpeed = (distance / difference) * 3.6; // km per hr
-                  if (
-                    averageSpeed >= 0 &&
-                    averageSpeed != null &&
-                    averageSpeed != NaN
-                  ) {
-                    averageSpeed = averageSpeed;
-                  } else {
-                    averageSpeed = 0;
-                  }
-                } else {
-                  averageSpeed = 0;
-                }
+                const sumOfSpeed = allSpd.reduce(
+                  (acc, curr) => acc + parseFloat(curr),
+                  0
+                );
+                const avgSpd = Math.round(sumOfSpeed) / allSpd.length;
+                const averageSpeed = avgSpd.toFixed(2);
 
                 let currentTime = Math.floor(+new Date() / 1000);
                 let timeDiff = currentTime - endTime;
                 let timeDiffInMin = timeDiff / 60;
+
+                // console.log(
+                //   "TripID:",
+                //   tripID,
+                //   " & Distance:",
+                //   distance,
+                //   "time:",
+                //   difference,
+                //   "& Avg:",
+                //   averageSpeed,
+                //   "EndTime: ",
+                //   endTime,
+                //   "Timediff",
+                //   timeDiffInMin
+                // );
 
                 if (parseInt(timeDiffInMin) > 30) {
                   try {
@@ -99,26 +105,26 @@ const cronJob = () => {
                         tripID,
                       ],
                       (err, data) => {
-                        if (err) return err;
-                        // console.log(data);
+                        if (err) console.log(err);
+                        console.log(data);
                       }
                     );
                   } catch (error) {
-                     console.log(error);
+                    console.log(error);
                   }
                 } else {
-                   console.log("Trip continued");
+                  console.log("Trip continued");
                 }
               }
             });
           } catch (error) {
-             console.log(error);
+            console.log(error);
           }
         });
       }
     });
   } catch (error) {
-     console.log(error);
+    console.log(error);
   }
 };
 

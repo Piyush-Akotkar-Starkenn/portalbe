@@ -59,37 +59,42 @@ export const addCustomer = (req, res) => {
 //////////////////////Editing Master_customer Data using user_id && customer_id /////////////////////
 
 export const editCustomer = (req, res) => {
-  const { customer_id } = req.params;
+  const { user_id, customer_id } = req.params;
 
-  let { ...columns } = req.body;
+  const { company_name, address, state, city, pincode, phone, status } =
+    req.body;
 
-  let updateQuery = `UPDATE customer_master SET `;
-  let updateData = [];
+  const editQuery =
+    "UPDATE customer_master SET user_id=?,company_name=?,address=?,state=?,city=?,pincode=?,phone=?,status=? WHERE customer_id=?";
 
-  Object.keys(columns).forEach((key, index) => {
-    updateQuery += `${key}=?`;
-    updateData.push(columns[key]);
-
-    if (index < Object.keys(columns).length - 1) {
-      updateQuery += ", ";
+  db.query(
+    editQuery,
+    [
+      user_id,
+      company_name,
+      address,
+      state,
+      city,
+      pincode,
+      phone,
+      status,
+      customer_id,
+    ],
+    (err, data) => {
+      if (err) {
+        res.status(500).send({ Error: err });
+      } else {
+        res.status(200).send({ UpdatedData: data });
+      }
     }
-  });
-
-  updateQuery += `WHERE customer_id=?`;
-  updateData.push(customer_id);
-
-  db.query(updateQuery, updateData, (error, results, fields) => {
-    if (error) throw error;
-    res.send({ editResult: results });
-  });
+  );
 };
 //////////////////getting all the users for admin side///////
 
 export const getallusers = (req, res) => {
-  const queryall =
-    "SELECT * from users WHERE user_type = ? ORDER BY user_id DESC";
+  const queryall = "SELECT * from users";
 
-  db.query(queryall, [2], (err, data) => {
+  db.query(queryall, (err, data) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -108,7 +113,7 @@ export const addUsers = (req, res) => {
       res.send({ ErrorCheckUser: err });
     } else {
       if (data.length > 0) {
-        res.status(500).send("User Already Exists");
+        res.status(501).send("User Already Exists");
       } else {
         bcrypt.hash(req.body.password, 4, function (err, hash) {
           if (err) {
@@ -142,29 +147,36 @@ export const addUsers = (req, res) => {
   });
 };
 
-// Editing the Users data
+//////////////Editing the Users data
+
 export const editUser = (req, res) => {
   let { user_id } = req.params;
-  let { ...columns } = req.body;
+  let { first_name, last_name, username, email, user_type, status } = req.body;
 
-  let updateQuery = `UPDATE users SET `;
-  let updateData = [];
+  bcrypt.hash(req.body.password, 4, function (err, hash) {
+    let user_type = 2;
+    let editQuery = `UPDATE users SET first_name=?,last_name=?,username=?,email=?,password=?,user_type=?,status=? WHERE user_id = ?`;
 
-  Object.keys(columns).forEach((key, index) => {
-    updateQuery += `${key}=?`;
-    updateData.push(columns[key]);
-
-    if (index < Object.keys(columns).length - 1) {
-      updateQuery += ", ";
-    }
-  });
-
-  updateQuery += `WHERE user_id=?`;
-  updateData.push(user_id);
-
-  db.query(updateQuery, updateData, (error, results, fields) => {
-    if (error) throw error;
-    res.send({ editResult: results });
+    db.query(
+      editQuery,
+      [
+        first_name,
+        last_name,
+        username,
+        email,
+        hash,
+        user_type,
+        status,
+        user_id,
+      ],
+      (err, data) => {
+        if (err) {
+          res.status(500).send({ Error: err });
+        } else {
+          res.status(200).send({ Message: "User Updated", myData: data });
+        }
+      }
+    );
   });
 };
 

@@ -1,12 +1,12 @@
 import { db } from "../Config/db.js";
 import pkg from "geolib";
 
-const cronJobForEndTrip = () => {
+const cronJob = () => {
   // get all the ongoing data from trip_summary
   try {
     let q =
       "SELECT trip_id,trip_status FROM trip_summary WHERE trip_status = ?";
-    db.query(q, 2, (err, results) => {
+    db.query(q, 0, (err, results) => {
       if (err) return err;
       if (results) {
         results.forEach((row) => {
@@ -139,4 +139,4 @@ const cronJobForEndTrip = () => {
   }
 };
 
-export default cronJobForEndTrip;
+export default cronJob;
