@@ -103,7 +103,7 @@ export const deleteDevice = (req, res) => {
 
 export const getuserDevice = (req, res) => {
   const { user_id } = req.params;
-  const getquery = "SELECT * FROM devices_master WHERE user_id=?";
+  const getquery = "SELECT * FROM devices_master WHERE user_id=? ORDER BY id DESC";
 
   db.query(getquery, [user_id], (err, data) => {
     if (err) {
