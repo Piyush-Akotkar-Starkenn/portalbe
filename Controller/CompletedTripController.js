@@ -38,7 +38,7 @@ export const getCompletedTrips = (req, res) => {
 export const getCompletedTripsAll = (req, res) => {
   let { offset, user_id } = req.params;
   
-  const q = `SELECT * FROM trip_summary INNER JOIN vehicle_master ON vehicle_master.vehicle_id=trip_summary.vehicle_id WHERE trip_summary.user_id = ? AND trip_summary.trip_status = ? AND trip_summary.total_distance > 10 ORDER BY trip_summary.id DESC`;
+  const q = `SELECT * FROM trip_summary INNER JOIN vehicle_master ON vehicle_master.vehicle_id=trip_summary.vehicle_id WHERE trip_summary.user_id = ? AND trip_summary.trip_status = ? ORDER BY trip_summary.id DESC`;
   const status = 1;
   db.query(q, [user_id, status], (err, results) => {
     if (err) return res.json(err);
