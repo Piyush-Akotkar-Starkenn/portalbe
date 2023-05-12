@@ -164,8 +164,9 @@ export const getusersVehicle = (req, res) => {
 
 // Getting IoT Data which is not assign to any vehicle
 export const getIoT = (req, res) => {
-  const getiotQuery =
-    "SELECT * FROM devices_master LEFT JOIN vehicle_master ON devices_master.device_id=vehicle_master.iot WHERE devices_master.device_type='IoT' AND vehicle_master.vehicle_id IS null";
+  let { user_id } = req.params;
+
+  const getiotQuery = `SELECT * FROM devices_master LEFT JOIN vehicle_master ON devices_master.device_id=vehicle_master.iot WHERE devices_master.device_type='IoT' AND vehicle_master.vehicle_id IS null AND devices_master.user_id = ${user_id}`;
 
   db.query(getiotQuery, (err, data) => {
     if (err) {
@@ -178,8 +179,9 @@ export const getIoT = (req, res) => {
 
 // Getting ECU Data which is not assign to any vehicle
 export const getECU = (req, res) => {
-  const ecugetQuery =
-    "SELECT * FROM devices_master LEFT JOIN vehicle_master ON devices_master.device_id=vehicle_master.ecu WHERE devices_master.device_type='ECU' AND vehicle_master.vehicle_id IS null";
+  let { user_id } = req.params;
+
+  const ecugetQuery = `SELECT * FROM devices_master LEFT JOIN vehicle_master ON devices_master.device_id=vehicle_master.ecu WHERE devices_master.device_type='ECU' AND vehicle_master.vehicle_id IS null AND devices_master.user_id = ${user_id}`;
 
   db.query(ecugetQuery, (err, data) => {
     if (err) {
@@ -192,8 +194,9 @@ export const getECU = (req, res) => {
 
 // getting data of DMS DATA
 export const getDMS = (req, res) => {
-  const DMSquery =
-    "SELECT * FROM devices_master LEFT JOIN vehicle_master ON devices_master.device_id=vehicle_master.dms WHERE devices_master.device_type='DMS' AND vehicle_master.vehicle_id IS null";
+  let { user_id } = req.params;
+
+  const DMSquery = `SELECT * FROM devices_master LEFT JOIN vehicle_master ON devices_master.device_id=vehicle_master.dms WHERE devices_master.device_type='DMS' AND vehicle_master.vehicle_id IS null AND devices_master.user_id = ${user_id}`;
   db.query(DMSquery, (err, data) => {
     if (err) {
       res.status(500).send({ ErrorDMS: err });
