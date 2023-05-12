@@ -29,13 +29,13 @@ VehicleRouter.get("/vehicle-card/:vehicle_id", getVehicle);
 VehicleRouter.get("/user-vehicle/:user_id", getusersVehicle);
 
 // Getting IoT Data which is not assign to any vehicle
-VehicleRouter.get("/get-iot", getIoT);
+VehicleRouter.get("/get-iot/:user_id", getIoT);
 
 // Getting ECU Data which is not assign to any vehicle
-VehicleRouter.get("/get-ecu", getECU);
+VehicleRouter.get("/get-ecu/:user_id", getECU);
 
 // Get DMS data which is not assign to any vehicle
-VehicleRouter.get("/get-dms", getDMS);
+VehicleRouter.get("/get-dms/:user_id", getDMS);
 
 // Get Vehicle by trip id
 VehicleRouter.get("/getVehicleByTripId/:id", getVehicleByTripId);
