@@ -1,6 +1,5 @@
 import { db } from "../Config/db.js";
-
-//Getting All Devices Data----START//
+//////////////////////Getting All Devices Data/////////////////////
 export const getall = (req, res) => {
   const queryGet =
     "SELECT dm.*, u.first_name, u.last_name, dm.status AS device_status, u.status AS user_status FROM devices_master AS dm INNER JOIN users AS u ON dm.user_id = u.user_id ORDER BY dm.id DESC";
@@ -12,12 +11,10 @@ export const getall = (req, res) => {
     }
   });
 };
-//Getting All Devices Data-Store Procedure---END//
 
+//////////////////////Adding Devices Data Into Database /////////////////////
 
-//Adding-Devices-Data-Into-Database--START//
 export const addDevice = (req, res) => {
-//----------------------Check-Device Already Exists---to the Device Id--------------------------//
   const checkQuery = "SELECT * FROM devices_master WHERE device_id=? ";
 
   db.query(checkQuery, [req.body.device_id], (checkerr, results) => {
@@ -27,11 +24,9 @@ export const addDevice = (req, res) => {
       if (results.length > 0) {
         res.status(200).send({ Message: "Device Already Exists" });
       } else {
-        // const insertQuery =
-        //   "INSERT INTO devices_master(`device_id`,`device_type`,`user_id`,`sim_number`,`status`) VALUES (?)";
+        const insertQuery =
+          "INSERT INTO devices_master(`device_id`,`device_type`,`user_id`,`sim_number`,`status`) VALUES (?)";
 
-//---------------------Insert Devices Data With Store Procedure----START------------------------//        
-const insertQuery = 'CALL InsertDevicesMaster(?,?,?,?,?)';
         const values = [
           req.body.device_id,
           req.body.device_type,
@@ -40,22 +35,20 @@ const insertQuery = 'CALL InsertDevicesMaster(?,?,?,?,?)';
           req.body.status,
         ];
 
-        db.query(insertQuery, values, (err, result) => {
+        db.query(insertQuery, [values], (err, deviceData) => {
           if (err) {
-            res.status(500).send({ Error: err.message });
+            res.status(500).send({ Error: err });
           } else {
-            res.status(200).send({message: 'Insert Devices Data successfully' });
+            res.status(200).send({ DeviceData: deviceData });
           }
         });
       }
     }
   });
 };
-//Insert Devices Data With Store Procedure--END//   
-//Adding-Devices-Data-Into-Databas-Store Procedure-END//
 
+//////////////////////Editing Devices Data/////////////////////
 
-//Update Devices Data With Store Procedure--START//   
 export const editDevice = (req, res) => {
   const { id } = req.params;
 
@@ -89,14 +82,13 @@ export const editDevice = (req, res) => {
     }
   });
 };
-//Update Devices Data With Store Procedure--END//   
 
+//////////////////////Deleting Devices Data/////////////////////
 
-//Deleting Devices Data-With Store Procedure-START//
 export const deleteDevice = (req, res) => {
   const { id } = req.params;
 
-  const deleteQuery = 'CALL deleteDevice(?)';
+  const deleteQuery = "DELETE FROM devices_master WHERE id=?";
 
   db.query(deleteQuery, [id], (err, data) => {
     if (err) {
@@ -106,10 +98,9 @@ export const deleteDevice = (req, res) => {
     }
   });
 };
-//Deleting Devices Data-With Store Procedure-END//
 
+///////////////////Getting which device assign to which User/////////////////////
 
-//Getting which device assign to which User--START//
 export const getuserDevice = (req, res) => {
   const { user_id } = req.params;
   const getquery = "SELECT * FROM devices_master WHERE user_id=? ORDER BY id DESC";
@@ -122,10 +113,9 @@ export const getuserDevice = (req, res) => {
     }
   });
 };
-//Getting which device assign to which User--END//
 
+//////////////////////Getting Particular Device Data/////////////////////
 
-//Getting Particular Device Data--START//
 export const getdevice = (req, res) => {
   const { id } = req.params;
   const getquery =
@@ -139,4 +129,3 @@ export const getdevice = (req, res) => {
     }
   });
 };
-//Getting Particular Device Data--END//

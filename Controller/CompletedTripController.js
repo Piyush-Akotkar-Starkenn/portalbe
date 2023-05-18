@@ -1,19 +1,16 @@
 import { db } from "../Config/db.js";
 
-
-//-------------------------------GetTripDataById--Store-Procedure---START-----------------------------//
-
 export const getTripDataById = (req, res) => {
   const tripId = req.params.id;
 
-  const q = "CALL get_trip_data_by_id(?)";
-  db.query(q, [tripId], (err, data) => {
+  const q =
+    "SELECT * FROM tripdata WHERE trip_id = ? AND event = ? ORDER BY timestamp ASC";
+  let event = "LOC";
+  db.query(q, [tripId, event], (err, data) => {
     if (err) return res.json(err);
     return res.json(data);
   });
 };
-
-//-------------------------------GetTripDataById--Store-Procedure---END-----------------------------//
 
 export const getFaultCountByTripId = (req, res) => {
   const tripID = req.params.id;
@@ -49,14 +46,11 @@ export const getCompletedTripsAll = (req, res) => {
   });
 };
 
-//-------------------------------GetCompletedTripsByVehicleId--Store-Procedure---START-----------------------------//
-
 export const getCompletedTripsByVehicleId = (req, res) => {
   let vehicleId = req.params.id;
 
   try {
-    const q = 'CALL getCompletedTripsByVehicleId(?,?)';
-    //const q = `SELECT * FROM trip_summary INNER JOIN vehicle_master ON vehicle_master.vehicle_id=trip_summary.vehicle_id WHERE trip_summary.trip_status = ? AND vehicle_master.vehicle_id = ? ORDER BY trip_summary.id DESC`;
+    const q = `SELECT * FROM trip_summary INNER JOIN vehicle_master ON vehicle_master.vehicle_id=trip_summary.vehicle_id WHERE trip_summary.trip_status = ? AND vehicle_master.vehicle_id = ? ORDER BY trip_summary.id DESC`;
     const status = 1;
     db.query(q, [status, vehicleId], async (err, results) => {
       if (err) return res.json(err);
@@ -68,9 +62,6 @@ export const getCompletedTripsByVehicleId = (req, res) => {
     console.log(error);
   }
 };
-
-//-------------------------------GetCompletedTripsByVehicleId--Store-Procedure---END-----------------------------//
-
 
 // For export vehicle report
 export const getAllAlertsByVehicleId = (req, res) => {
@@ -251,18 +242,13 @@ export const getAllAlertsByVehicleId = (req, res) => {
   }
 };
 
-//-------------------------------GetTripSummaryById--Store-Procedure---START-----------------------------//
-
 export const getTripSummaryById = (req, res) => {
   const tripId = req.params.id;
 
-  const q = "CALL get_trip_summary_by_id(?)";
+  const q = "SELECT * FROM trip_summary WHERE trip_id = ?";
 
   db.query(q, [tripId], (err, data) => {
     if (err) return res.json(err);
     return res.json(data);
   });
 };
-
-//-------------------------------GetTripSummaryById--Store-Procedure---END-----------------------------//
-

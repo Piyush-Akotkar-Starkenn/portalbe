@@ -1,6 +1,6 @@
 import { db } from "../Config/db.js";
 
-// Getting All Vehicle Data  --START//
+// Getting All Vehicle Data
 export const getAllVehicles = (req, res) => {
   const Query = "SELECT * FROM vehicle_master ORDER BY vehicle_id DESC";
 
@@ -12,9 +12,8 @@ export const getAllVehicles = (req, res) => {
     }
   });
 };
-// Getting All Vehicle Data  --END//
 
-// Adding vehicle Into DataBase By Store Procedure -- START//
+// Adding vehicle Into DataBase
 export const addVehicle = (req, res) => {
   const { user_id } = req.params;
 
@@ -29,9 +28,9 @@ export const addVehicle = (req, res) => {
         res.status(500).send({ Error: "Vehicle Already Exists" });
       } else {
         if (req.body.dms && req.body.iot == null && req.body.ecu == null) {
-          // const addQuery =
-          //   "INSERT INTO vehicle_master(`user_id`,`vehicle_name`,`vehicle_registration`,`dms`,`featureset`,`status`, `created_at`) VALUES (?, ?, ?, ?, ?, ?, NOW())";
-const addQuery ='CALL InsertVehicleMasterIOT(?, ?, ?, ?, ?, ?, NOW())';
+          const addQuery =
+            "INSERT INTO vehicle_master(`user_id`,`vehicle_name`,`vehicle_registration`,`dms`,`featureset`,`status`, `created_at`) VALUES (?, ?, ?, ?, ?, ?, NOW())";
+
           const values = [
             user_id,
             req.body.vehicle_name,
@@ -48,9 +47,9 @@ const addQuery ='CALL InsertVehicleMasterIOT(?, ?, ?, ?, ?, ?, NOW())';
             }
           });
         } else if (req.body.dms == null && req.body.iot && req.body.ecu) {
-          // const addQuery =
-          //   "INSERT INTO vehicle_master(`user_id`,`vehicle_name`,`vehicle_registration`,`ecu`,`iot`,`featureset`,`status`, `created_at`) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
-          const addQuery = 'CALL InsertVehicleMasterCAS(?, ?, ?, ?, ?, ?, ?, NOW())'
+          const addQuery =
+            "INSERT INTO vehicle_master(`user_id`,`vehicle_name`,`vehicle_registration`,`ecu`,`iot`,`featureset`,`status`, `created_at`) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+
           const values = [
             user_id,
             req.body.vehicle_name,
@@ -68,9 +67,9 @@ const addQuery ='CALL InsertVehicleMasterIOT(?, ?, ?, ?, ?, ?, NOW())';
             }
           });
         } else {
-          // const addQuery =
-          //   "INSERT INTO vehicle_master(`user_id`,`vehicle_name`,`vehicle_registration`,`ecu`,`iot`,`dms`,`featureset`,`status`, `created_at`) VALUES (?, ?, ?, ?, ?, ?, ?,?, NOW())";
-          const addQuery = 'CALL InsertVehicleMasterCASDMS(?, ?, ?, ?, ?, ?, ?,?, NOW())'
+          const addQuery =
+            "INSERT INTO vehicle_master(`user_id`,`vehicle_name`,`vehicle_registration`,`ecu`,`iot`,`dms`,`featureset`,`status`, `created_at`) VALUES (?, ?, ?, ?, ?, ?, ?,?, NOW())";
+
           const values = [
             user_id,
             req.body.vehicle_name,
@@ -93,7 +92,6 @@ const addQuery ='CALL InsertVehicleMasterIOT(?, ?, ?, ?, ?, ?, NOW())';
     }
   });
 };
-// Adding vehicle Into DataBase By Store Procedure -- END//
 
 // Editing Vehicle Data of Particular Customer User Data
 export const editVehicle = (req, res) => {
@@ -121,11 +119,11 @@ export const editVehicle = (req, res) => {
   });
 };
 
-// Deleting Vehicle Data using vehicle_id With Store Procedure-- START//
+// Deleting Vehicle Data using vehicle_id
 export const deleteVehicle = (req, res) => {
   const { vehicle_id } = req.params;
-  //const deleteQuery = "DELETE FROM vehicle_master WHERE vehicle_id=?";
-  const deleteQuery = 'CALL deleteVehicle(?)';
+  const deleteQuery = "DELETE FROM vehicle_master WHERE vehicle_id=?";
+
   db.query(deleteQuery, [vehicle_id], (err, data) => {
     if (err) {
       res.status(500).send({ ErrorDelete: err });
@@ -134,7 +132,6 @@ export const deleteVehicle = (req, res) => {
     }
   });
 };
-// Deleting Vehicle Data using vehicle_id With Store Procedure-- END//
 
 // Getting Data of Particular vehicle
 export const getVehicle = (req, res) => {
