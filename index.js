@@ -12,6 +12,8 @@ import CompletedTripRoute from "./Routes/completedTrip.js";
 import UsersRouter from "./Routes/users.js";
 import cookieParser from "cookie-parser";
 
+//const UserRouter = require("./Routes/users.js")
+
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
@@ -29,6 +31,7 @@ app.use("/api/customers", CustomerRoute);
 app.use("/api/completedTrip", CompletedTripRoute);
 app.use("/api/ongoingTrip", OngoingTripsRouter);
 app.use("/api/users", UsersRouter);
+//app.use("/api/user", UserRouter);
 
 
 app.listen(9001, () => {
