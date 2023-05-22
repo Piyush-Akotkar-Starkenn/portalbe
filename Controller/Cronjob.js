@@ -82,26 +82,9 @@ const cronJobForEndTrip = () => {
                 let currentTime = Math.floor(+new Date() / 1000);
                 let timeDiff = currentTime - endTime;
                 let timeDiffInMin = timeDiff / 60;
-
-                console.log(
-                  "TripID:",
-                  tripID,
-                  " & Distance:",
-                  distance,
-                  "time:",
-                  difference,
-                  "& Avg:",
-                  averageSpeed,
-                  "EndTime: ",
-                  endTime,
-                  "Timediff",
-                  timeDiffInMin
-                );
-
+                
                 // return false;
-                if (parseInt(timeDiffInMin) > 30) {
-                  try {
-                    const q =
+                const q =
                       "UPDATE trip_summary SET trip_start_time=?, trip_end_time=?,total_distance=?,duration=?,avg_spd=?,max_spd=?, trip_status=? WHERE trip_id = ?";
                     db.query(
                       q,
@@ -120,12 +103,6 @@ const cronJobForEndTrip = () => {
                         console.log(data);
                       }
                     );
-                  } catch (error) {
-                    console.log(error);
-                  }
-                } else {
-                  console.log("Trip continued");
-                }
               }
             });
           } catch (error) {
