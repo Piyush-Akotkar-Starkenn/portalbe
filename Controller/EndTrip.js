@@ -20,8 +20,9 @@ const EndTrip = (jsonData) => {
             const updateOngoingTrip = `UPDATE trip_summary SET trip_status=? WHERE trip_id=?`;
             db.query(updateOngoingTrip, [2, item.trip_id], (err, results) => {
               if (err) return err;
-              console.log(results);
-              cronJobForEndTrip();
+              if (results) {
+                cronJobForEndTrip();
+              }
             });
           }
         });
