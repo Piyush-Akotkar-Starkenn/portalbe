@@ -56,7 +56,6 @@ export const login = (req, res) => {
   });
 };
 
-
 export const signup = (req, res) => {
   const checkuserQuery = "SELECT * FROM users WHERE  username=? OR email=? ";
 

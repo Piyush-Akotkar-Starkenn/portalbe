@@ -16,7 +16,7 @@ const cronJobForEndTrip = () => {
           let duration = 0;
 
           let q =
-            "SELECT * FROM tripdata WHERE trip_id = ? ORDER BY timestamp ASC";
+            "SELECT * FROM tripdata WHERE trip_id = ? AND event = 'LOC' ORDER BY timestamp ASC";
           try {
             db.query(q, row.trip_id, (err, results) => {
               if (err) return err;
@@ -40,7 +40,11 @@ const cronJobForEndTrip = () => {
                   allSpd.push(item.spd);
                 });
 
-                let maxSpd = Math.max(...allSpd.map(parseFloat));
+                let maxSpd = 0;
+                maxSpd = Math.max(...allSpd.map(parseFloat));
+                if (maxSpd < 0) {
+                  maxSpd = 0;
+                }
                 let difference = "";
                 let distance = 0;
                 // calculate the total distance traveled
@@ -63,46 +67,52 @@ const cronJobForEndTrip = () => {
                 }
 
                 // Avg speed
-                let averageSpeed = 0;
-                if (difference > 0) {
-                  averageSpeed = (distance / difference) * 3.6; // km per hr
-                  if (
-                    averageSpeed >= 0 &&
-                    averageSpeed != null &&
-                    averageSpeed != NaN
-                  ) {
-                    averageSpeed = averageSpeed;
-                  } else {
-                    averageSpeed = 0;
-                  }
-                } else {
-                  averageSpeed = 0;
-                }
+                const sumOfSpeed = allSpd.reduce(
+                  (acc, curr) => acc + parseFloat(curr),
+                  0
+                );
+                const avgSpd = Math.round(sumOfSpeed) / allSpd.length;
+                const averageSpeed = avgSpd.toFixed(2);
 
                 let currentTime = Math.floor(+new Date() / 1000);
                 let timeDiff = currentTime - endTime;
                 let timeDiffInMin = timeDiff / 60;
-                
+
+                console.log(
+                  "TripID:",
+                  tripID,
+                  " & Distance:",
+                  distance,
+                  "time:",
+                  difference,
+                  "& Avg:",
+                  averageSpeed,
+                  "EndTime: ",
+                  endTime,
+                  "Timediff",
+                  timeDiffInMin
+                );
+
                 // return false;
                 const q =
-                      "UPDATE trip_summary SET trip_start_time=?, trip_end_time=?,total_distance=?,duration=?,avg_spd=?,max_spd=?, trip_status=? WHERE trip_id = ?";
-                    db.query(
-                      q,
-                      [
-                        startTime,
-                        endTime,
-                        distance,
-                        duration,
-                        averageSpeed,
-                        maxSpd,
-                        1,
-                        tripID,
-                      ],
-                      (err, data) => {
-                        if (err) console.log(err);
-                        console.log(data);
-                      }
-                    );
+                  "UPDATE trip_summary SET trip_start_time=?, trip_end_time=?,total_distance=?,duration=?,avg_spd=?,max_spd=?, trip_status=? WHERE trip_id = ?";
+                db.query(
+                  q,
+                  [
+                    startTime,
+                    endTime,
+                    distance,
+                    duration,
+                    averageSpeed,
+                    maxSpd,
+                    1,
+                    tripID,
+                  ],
+                  (err, data) => {
+                    if (err) console.log(err);
+                    console.log(data);
+                  }
+                );
               }
             });
           } catch (error) {

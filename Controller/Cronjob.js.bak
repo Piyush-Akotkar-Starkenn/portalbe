@@ -1,12 +1,12 @@
 import { db } from "../Config/db.js";
 import pkg from "geolib";
 
-const cronJob = () => {
+const cronJobForEndTrip = () => {
   // get all the ongoing data from trip_summary
   try {
     let q =
       "SELECT trip_id,trip_status FROM trip_summary WHERE trip_status = ?";
-    db.query(q, 0, (err, results) => {
+    db.query(q, 2, (err, results) => {
       if (err) return err;
       if (results) {
         results.forEach((row) => {
@@ -31,6 +31,7 @@ const cronJob = () => {
                     startTime = item.timestamp;
                   } else if (index === results.length - 1) {
                     endTime = item.timestamp;
+                    console.log(endTime);
                   }
                   if (item.event == "LOC") {
                     let geodata = { latitude: item.lat, longitude: item.lng };
@@ -62,35 +63,28 @@ const cronJob = () => {
                 }
 
                 // Avg speed
-                const sumOfSpeed = allSpd.reduce(
-                  (acc, curr) => acc + parseFloat(curr),
-                  0
-                );
-                const avgSpd = Math.round(sumOfSpeed) / allSpd.length;
-                const averageSpeed = avgSpd.toFixed(2);
+                let averageSpeed = 0;
+                if (difference > 0) {
+                  averageSpeed = (distance / difference) * 3.6; // km per hr
+                  if (
+                    averageSpeed >= 0 &&
+                    averageSpeed != null &&
+                    averageSpeed != NaN
+                  ) {
+                    averageSpeed = averageSpeed;
+                  } else {
+                    averageSpeed = 0;
+                  }
+                } else {
+                  averageSpeed = 0;
+                }
 
                 let currentTime = Math.floor(+new Date() / 1000);
                 let timeDiff = currentTime - endTime;
                 let timeDiffInMin = timeDiff / 60;
-
-                // console.log(
-                //   "TripID:",
-                //   tripID,
-                //   " & Distance:",
-                //   distance,
-                //   "time:",
-                //   difference,
-                //   "& Avg:",
-                //   averageSpeed,
-                //   "EndTime: ",
-                //   endTime,
-                //   "Timediff",
-                //   timeDiffInMin
-                // );
-
-                if (parseInt(timeDiffInMin) > 30) {
-                  try {
-                    const q =
+                
+                // return false;
+                const q =
                       "UPDATE trip_summary SET trip_start_time=?, trip_end_time=?,total_distance=?,duration=?,avg_spd=?,max_spd=?, trip_status=? WHERE trip_id = ?";
                     db.query(
                       q,
@@ -109,12 +103,6 @@ const cronJob = () => {
                         console.log(data);
                       }
                     );
-                  } catch (error) {
-                    console.log(error);
-                  }
-                } else {
-                  console.log("Trip continued");
-                }
               }
             });
           } catch (error) {
@@ -128,4 +116,4 @@ const cronJob = () => {
   }
 };
 
-export default cronJob;
+export default cronJobForEndTrip;

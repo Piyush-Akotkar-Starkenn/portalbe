@@ -16,7 +16,7 @@ const cronJob = () => {
           let duration = 0;
 
           let q =
-            "SELECT * FROM tripdata WHERE trip_id = ? ORDER BY timestamp ASC";
+            "SELECT * FROM tripdata WHERE trip_id = ? AND event = 'LOC' ORDER BY timestamp ASC";
           try {
             db.query(q, row.trip_id, (err, results) => {
               if (err) return err;
@@ -39,7 +39,11 @@ const cronJob = () => {
                   allSpd.push(item.spd);
                 });
 
-                let maxSpd = Math.max(...allSpd.map(parseFloat));
+                let maxSpd = 0;
+                maxSpd = Math.max(...allSpd.map(parseFloat));
+                if (maxSpd < 0) {
+                  maxSpd = 0;
+                }
                 let difference = "";
                 let distance = 0;
                 // calculate the total distance traveled

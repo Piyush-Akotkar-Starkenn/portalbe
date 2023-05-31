@@ -25,10 +25,9 @@ export const getOngoingTripdataById = (req, res) => {
 
 export const getOngoingFaultByTripId = (req, res) => {
   const tripID = req.params.id;
-  const epochstart = req.params.epochstart;
-  const epochend = req.params.epochend;
 
-  const q = `SELECT * FROM tripdata WHERE trip_id = ? AND event != 'IGS' AND event != 'NSQ' AND event != 'LOC' AND event != 'RFID'  AND timestamp >= ${epochstart} AND timestamp <= ${epochend}`;
+  const q =
+    "SELECT * FROM tripdata WHERE trip_id = ? AND event != 'IGS' AND event != 'NSQ' AND event != 'LOC' AND event != 'RFID'";
 
   db.query(q, [tripID], (err, data) => {
     if (err) return res.json(err);
