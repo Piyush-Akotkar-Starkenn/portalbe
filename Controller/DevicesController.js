@@ -1,6 +1,4 @@
 import { db } from "../Config/db.js";
-import subscribeToTopics from "./tripmqtt.js";
-
 //////////////////////Getting All Devices Data/////////////////////
 export const getall = (req, res) => {
   const queryGet =
@@ -42,7 +40,6 @@ export const addDevice = (req, res) => {
             res.status(500).send({ Error: err });
           } else {
             res.status(200).send({ DeviceData: deviceData });
-            subscribeToTopics();
           }
         });
       }
