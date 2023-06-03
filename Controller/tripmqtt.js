@@ -24,8 +24,7 @@ const getMqttData = () => {
     reconnectPeriod: 1000,
   });
 
-  const subscribeToTopics = () => {
-    // Connect to the topics
+  // Connect to the topics
     client.on("connect", () => {
       let q =
         "SELECT * FROM devices_master WHERE device_type = 'IoT' OR device_type = 'DMS' AND status = '1'";
@@ -45,10 +44,7 @@ const getMqttData = () => {
         }
       });
     });
-  };
 
-  // Initial subscription to topics from the database
-  subscribeToTopics();
 
   // Get the real time message data from the device
   client.on("message", function (topic, message) {
