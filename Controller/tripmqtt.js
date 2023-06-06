@@ -6,25 +6,26 @@ import { client } from "../Config/mqttConnection.js";
 
 const getMqttData = () => {
   // Connect to the topics
-  client.on("connect", () => {
-    let q =
-      "SELECT * FROM devices_master WHERE device_type = 'IoT' OR device_type = 'DMS' AND status = '1'";
-    db.query(q, (err, results) => {
-      if (err) return err;
-      if (results) {
-        results.forEach((row) => {
-          let getTopic = "starkennInv3/" + row.device_id + "/data";
-          client.subscribe(getTopic, (err) => {
-            if (err) {
-              console.log("Error subscribing to topic:", getTopic);
-            } else {
-              console.log("Subscribed to topic:", getTopic);
-            }
+    client.on("connect", () => {
+      let q =
+        "SELECT * FROM devices_master WHERE device_type = 'IoT' OR device_type = 'DMS' AND status = '1'";
+      db.query(q, (err, results) => {
+        if (err) return err;
+        if (results) {
+          results.forEach((row) => {
+            let getTopic = "starkennInv3/" + row.device_id + "/data";
+            client.subscribe(getTopic, (err) => {
+              if (err) {
+                console.log("Error subscribing to topic:", getTopic);
+              } else {
+                console.log("Subscribed to topic:", getTopic);
+              }
+            });
           });
-        });
-      }
+        }
+      });
     });
-  });
+
 
   // Get the real time message data from the device
   client.on("message", function (topic, message) {
