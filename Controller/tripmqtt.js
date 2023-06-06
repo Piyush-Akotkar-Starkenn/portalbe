@@ -1,50 +1,30 @@
-import mqtt from "mqtt";
 import { db } from "../Config/db.js";
-import * as dotenv from "dotenv";
-dotenv.config();
 
 import async from "async";
 import EndTrip from "./EndTrip.js";
+import { client } from "../Config/mqttConnection.js";
 
 const getMqttData = () => {
-  // MQTT creds
-  const host = process.env.MQTT_HOST;
-  const port = process.env.MQTT_PORT;
-  const clientId = `mqtt_${Math.random().toString(16).slice(3)}`;
-
-  const connectUrl = `mqtt://${host}:${port}`;
-
-  // Connect to MQTT server
-  const client = mqtt.connect(connectUrl, {
-    clientId,
-    clean: true,
-    connectTimeout: 4000,
-    username: process.env.MQTT_USERNAME,
-    password: process.env.MQTT_PASSWORD,
-    reconnectPeriod: 1000,
-  });
-
   // Connect to the topics
-    client.on("connect", () => {
-      let q =
-        "SELECT * FROM devices_master WHERE device_type = 'IoT' OR device_type = 'DMS' AND status = '1'";
-      db.query(q, (err, results) => {
-        if (err) return err;
-        if (results) {
-          results.forEach((row) => {
-            let getTopic = "starkennInv3/" + row.device_id + "/data";
-            client.subscribe(getTopic, (err) => {
-              if (err) {
-                console.log("Error subscribing to topic:", getTopic);
-              } else {
-                console.log("Subscribed to topic:", getTopic);
-              }
-            });
+  client.on("connect", () => {
+    let q =
+      "SELECT * FROM devices_master WHERE device_type = 'IoT' OR device_type = 'DMS' AND status = '1'";
+    db.query(q, (err, results) => {
+      if (err) return err;
+      if (results) {
+        results.forEach((row) => {
+          let getTopic = "starkennInv3/" + row.device_id + "/data";
+          client.subscribe(getTopic, (err) => {
+            if (err) {
+              console.log("Error subscribing to topic:", getTopic);
+            } else {
+              console.log("Subscribed to topic:", getTopic);
+            }
           });
-        }
-      });
+        });
+      }
     });
-
+  });
 
   // Get the real time message data from the device
   client.on("message", function (topic, message) {
