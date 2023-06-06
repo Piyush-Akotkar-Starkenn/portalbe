@@ -1,4 +1,6 @@
 import { db } from "../Config/db.js";
+import { client, endConnection } from "../Config/mqttConnection.js";
+
 //////////////////////Getting All Devices Data/////////////////////
 export const getall = (req, res) => {
   const queryGet =
@@ -15,6 +17,9 @@ export const getall = (req, res) => {
 //////////////////////Adding Devices Data Into Database /////////////////////
 
 export const addDevice = (req, res) => {
+  endConnection();
+  client.reconnect();
+
   const checkQuery = "SELECT * FROM devices_master WHERE device_id=? ";
 
   db.query(checkQuery, [req.body.device_id], (checkerr, results) => {
@@ -48,7 +53,6 @@ export const addDevice = (req, res) => {
 };
 
 //////////////////////Editing Devices Data/////////////////////
-
 export const editDevice = (req, res) => {
   const { id } = req.params;
 
