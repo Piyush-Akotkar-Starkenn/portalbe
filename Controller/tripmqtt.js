@@ -167,33 +167,12 @@ const getMqttData = () => {
                   jsonData: JSON.stringify(task.message),
                 };
 
-                const checkStatus =
-                  "SELECT trip_id,trip_status FROM trip_summary WHERE trip_id=? AND trip_status=?";
-
-                const status = 1;
-
-                db.query(
-                  checkStatus,
-                  [jsonData.trip_id, status],
-                  (err, results) => {
-                    if (err) {
-                      throw err;
-                    } else {
-                      if (results.length > 0) {
-                        console.log(
-                          "Status of this trip is completed data will be scarapped"
-                        );
-                      } else {
-                        let q = "INSERT INTO tripdata SET ?";
+                let q = "INSERT INTO tripdata SET ?";
                         db.query(q, values, function (error, results) {
                           if (error) throw error;
                           console.log("Inserted");
                           callback();
                         });
-                      }
-                    }
-                  }
-                );
               }
               // All the mqtt data should store in tripdata table with the trip id
               updateTripData();
